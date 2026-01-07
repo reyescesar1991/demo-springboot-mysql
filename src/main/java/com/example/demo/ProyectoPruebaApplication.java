@@ -10,13 +10,7 @@ public class ProyectoPruebaApplication {
 
 	public static void main(String[] args) {
 
-		var app = new SpringApplication(ProyectoPruebaApplication.class);
-
-		app.setDefaultProperties(
-			Collections.singletonMap("spring.profiles.active", "dev")
-		);
-
-		var ctx = app.run(args);
+		SpringApplication.run(ProyectoPruebaApplication.class);
 
 	}
 
