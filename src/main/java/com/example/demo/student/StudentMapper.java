@@ -13,9 +13,11 @@ public class StudentMapper {
         student.setLastName(studentDto.lastName());
         student.setEmail(studentDto.email());
 
-        var school = new School();
-        school.setId(studentDto.schoolId());
-        student.setSchool(school);
+        if (studentDto.schoolId() != null) {
+            var school = new School();
+            school.setId(studentDto.schoolId());
+            student.setSchool(school);
+        }
 
         return student;
     }

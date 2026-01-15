@@ -14,6 +14,8 @@ import com.example.demo.student.StudentDto;
 import com.example.demo.student.StudentResponseDto;
 import com.example.demo.student.StudentService;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 
 @RestController
@@ -46,7 +48,7 @@ public class FirstController {
     
 
     @PostMapping("/students")
-    public StudentResponseDto saveStudent(@RequestBody StudentDto dto) {
+    public StudentResponseDto saveStudent(@Valid @RequestBody StudentDto dto) {
 
         return this.studentService.saveStudent(dto);
     }
