@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.student;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;

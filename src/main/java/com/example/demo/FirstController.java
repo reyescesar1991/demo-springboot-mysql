@@ -9,15 +9,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.student.StudentDto;
+import com.example.demo.student.StudentResponseDto;
+import com.example.demo.student.StudentService;
+
 import org.springframework.http.HttpStatus;
 
 @RestController
 public class FirstController {
 
-    private final StudentRepository studentRepository;
+    private final StudentService studentService;
 
-    public FirstController(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
+    public FirstController(StudentService studentService) {
+        this.studentService = studentService;
     }
 
     //No se pueden crear dos metodos con el mismo path y verbo HTTP
@@ -27,58 +32,36 @@ public class FirstController {
     }
 
     @GetMapping("/students")
-    public List<Student> findStudents() {
-        return studentRepository.findAll();
+    public List<StudentResponseDto> findStudents() {
+        
+        return this.studentService.findStudents();
     }
 
     //No se pueden crear dos metodos con el mismo path y verbo HTTP
     @GetMapping("/students/{student-id}")
     public StudentResponseDto findStudentById(@PathVariable("student-id") Integer studentId) {
-        return studentRepository.findById(studentId)
-                .map(this::toStudentResponseDto)
-                .orElse(null);
+        
+        return this.studentService.findStudentById(studentId);
     }
     
 
     @PostMapping("/students")
-    public StudentResponseDto post(@RequestBody StudentDto dto) {
+    public StudentResponseDto saveStudent(@RequestBody StudentDto dto) {
 
-        var student = toStudent(dto);
-        var savedStudent = studentRepository.save(student);
-        return toStudentResponseDto(savedStudent);
+        return this.studentService.saveStudent(dto);
     }
 
-    private Student toStudent(StudentDto studentDto) {
-        var student = new Student();
-        student.setFirstName(studentDto.firstName());
-        student.setLastName(studentDto.lastName());
-        student.setEmail(studentDto.email());
-
-        var school = new School();
-        school.setId(studentDto.schoolId());
-        student.setSchool(school);
-
-        return student;
-    }
-
-    private StudentResponseDto toStudentResponseDto(Student student) {
-        return new StudentResponseDto(
-                student.getFirstName(),
-                student.getLastName(),
-                student.getEmail()
-        );
-    }
 
     @GetMapping("/students/search/{student-name}")
-    public List<Student> findStudentsByFirstName(@PathVariable("student-name") String name) {
-        return studentRepository.findStudentByFirstName(name);
+    public List<StudentResponseDto> findStudentsByFirstName(@PathVariable("student-name") String name) {
+        
+        return this.studentService.findStudentsByFirstName(name);
     }
 
     @DeleteMapping("/students/{student-id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String deleteStudent(@PathVariable("student-id") Integer studentId) {
-        studentRepository.deleteById(studentId);
-        return "Student deleted successfully!";
+        return this.studentService.deleteStudent(studentId);
     }
 
 }
