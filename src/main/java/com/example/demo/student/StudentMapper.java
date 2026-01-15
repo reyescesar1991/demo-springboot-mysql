@@ -8,6 +8,11 @@ import com.example.demo.school.School;
 public class StudentMapper {
 
     public Student toStudent(StudentDto studentDto) {
+
+        if(studentDto == null){
+            throw new NullPointerException("studentDto is null");
+        }
+
         var student = new Student();
         student.setFirstName(studentDto.firstName());
         student.setLastName(studentDto.lastName());
