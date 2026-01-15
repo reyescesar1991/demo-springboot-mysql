@@ -19,14 +19,26 @@ public class SchoolController {
     }
 
     @PostMapping("/schools")
-    public School createSchool(@RequestBody School school) {
+    public SchoolDto createSchool(@RequestBody SchoolDto dto) {
 
-        return schoolRepository.save(school);
+        var school = toSchool(dto);
+        schoolRepository.save(school);
+        return dto;
+    }
+
+    private School toSchool(SchoolDto schoolDto) {
+        return new School(schoolDto.name());
+    }
+
+    private SchoolDto toSchoolDto(School school) {
+        return new SchoolDto(school.getName());
     }
 
     @GetMapping("/schools")
-    public List<School> findAll() {
-        return schoolRepository.findAll();
+    public List<SchoolDto> findAll() {
+        return schoolRepository.findAll().stream() //stream de School a SchoolDto
+                .map(this::toSchoolDto) //map to SchoolDto
+                .toList(); //collect to List
     }
     
 }

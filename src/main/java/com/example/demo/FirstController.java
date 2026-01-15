@@ -33,19 +33,40 @@ public class FirstController {
 
     //No se pueden crear dos metodos con el mismo path y verbo HTTP
     @GetMapping("/students/{student-id}")
-    public String findStudentById(@PathVariable("student-id") Integer studentId) {
+    public StudentResponseDto findStudentById(@PathVariable("student-id") Integer studentId) {
         return studentRepository.findById(studentId)
-                .map(student -> "Student found: " + student.getFirstName() + " " + student.getLastName())
-                .orElse("Student not found");
+                .map(this::toStudentResponseDto)
+                .orElse(null);
     }
     
 
     @PostMapping("/students")
-    public String post(@RequestBody Student student) {
+    public StudentResponseDto post(@RequestBody StudentDto dto) {
 
+        var student = toStudent(dto);
+        var savedStudent = studentRepository.save(student);
+        return toStudentResponseDto(savedStudent);
+    }
 
-        studentRepository.save(student);
-        return "Student added successfully!";
+    private Student toStudent(StudentDto studentDto) {
+        var student = new Student();
+        student.setFirstName(studentDto.firstName());
+        student.setLastName(studentDto.lastName());
+        student.setEmail(studentDto.email());
+
+        var school = new School();
+        school.setId(studentDto.schoolId());
+        student.setSchool(school);
+
+        return student;
+    }
+
+    private StudentResponseDto toStudentResponseDto(Student student) {
+        return new StudentResponseDto(
+                student.getFirstName(),
+                student.getLastName(),
+                student.getEmail()
+        );
     }
 
     @GetMapping("/students/search/{student-name}")

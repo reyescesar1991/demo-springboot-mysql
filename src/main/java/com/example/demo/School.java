@@ -27,6 +27,10 @@ public class School {
     public School() {
     }
 
+    public School(String name) {
+        this.name = name;
+    }
+
     public School(Integer id, String name) {
         this.id = id;
         this.name = name;
